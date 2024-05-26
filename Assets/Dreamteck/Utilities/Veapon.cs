@@ -2,34 +2,41 @@ using UnityEngine;
 
 public class Weapon : MonoBehaviour
 {
-    public Transform bullet;
-    public int bulletForce = 5000;
-    public int magazine = 30;
-    public AudioClip fireSound;
-    public AudioClip reloadSound;
-
-    private AudioSource audioSource;
+    public GameObject bulletPrefab;
+    public Transform firePoint;
+    public float bulletSpeed = 10f;
+    public int maxAmmo = 30;
+    private int currentAmmo;
 
     void Start()
     {
-        audioSource = GetComponent<AudioSource>();
+        currentAmmo = maxAmmo;
     }
 
     void Update()
     {
-        if (Input.GetMouseButtonDown(0) && magazine > 0)
+        if (Input.GetKeyDown(KeyCode.Mouse0))
         {
-            Transform bulletInstance = Instantiate(bullet, transform.position, transform.rotation);
-            bulletInstance.GetComponent<Rigidbody>().AddForce(transform.forward * bulletForce);
-            magazine--;
-            audioSource.PlayOneShot(fireSound);
+            if (currentAmmo > 0)
+            {
+                Shoot();
+            }
         }
-
-        if (Input.GetKeyDown(KeyCode.R))
+        else if (Input.GetKeyDown(KeyCode.R))
         {
-            magazine = 30; // assuming you want to reload to full magazine
-            audioSource.PlayOneShot(reloadSound);
+            Reload();
         }
     }
-}
 
+    void Shoot()
+    {
+        Instantiate(bulletPrefab, firePoint.position, firePoint.rotation);
+        currentAmmo--;
+    
+    }
+
+    void Reload()
+    {
+        currentAmmo = maxAmmo;
+    }
+}
